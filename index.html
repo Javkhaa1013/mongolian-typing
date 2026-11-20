@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="mn">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Хуруу — Монгол бичих дасгал</title>
+<style>
+:root{--bg:#10151d;--panel:#19212c;--ink:#edf3fa;--muted:#a6b4c5;--line:#324052;--accent:#a6e6b5;--good:#64e0a4;--bad:#ff7e88;--key:#202c3b;color-scheme:dark}
+:root.light{--bg:#f2f5fa;--panel:#fff;--ink:#1b293b;--muted:#52647a;--line:#d4deeb;--accent:#216c44;--good:#117747;--bad:#c32e43;--key:#f3f6fc;color-scheme:light}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,Segoe UI,sans-serif}button,select{font:inherit;color:inherit;background:var(--key);border:1px solid var(--line);border-radius:10px;padding:9px 14px}button{cursor:pointer}button:hover{border-color:var(--accent)}button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}a{color:var(--accent)}main{max-width:1180px;margin:auto;padding:26px}header,.spread,.actions,.tabs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}header{padding-bottom:24px;border-bottom:1px solid var(--line)}.brand{font-size:24px;font-weight:800;letter-spacing:.02em}.brand span{background:var(--accent);color:var(--bg);padding:3px 10px;border-radius:9px;margin-right:9px}.muted,small{color:var(--muted)}small{font-size:14px}h1{font-size:clamp(26px,4vw,38px);line-height:1.2;margin:25px 0 8px}h2{font-size:19px;margin:0 0 10px}p{margin:8px 0}.tabs{justify-content:flex-start;margin:24px 0 16px}.tabs button[aria-pressed=true],.primary{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}.controls{display:flex;gap:16px;align-items:end;flex-wrap:wrap;margin-bottom:18px}label{display:grid;gap:5px;color:var(--muted);font-size:14px}select{min-width:240px;max-width:100%;color:var(--ink)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px}.stat{padding:14px 20px}.stat strong{display:block;font-size:29px;line-height:1.3;font-variant-numeric:tabular-nums}.stat span{font-size:14px;color:var(--muted)}.card{padding:24px}.practice{outline:none;cursor:text}.practice:focus{border-color:var(--accent)}.passage{font:25px/1.95 ui-monospace,Consolas,monospace;letter-spacing:.025em;max-height:160px;overflow:auto;margin:16px 0;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin}.char{border-bottom:2px solid transparent}.char.done{color:var(--good)}.char.current{color:var(--ink);background:var(--key);border-bottom:3px solid var(--accent)}.char.wrong{background:var(--bad);color:var(--bg)}progress{width:100%;height:5px;accent-color:var(--accent);display:block;margin-top:18px}.guide{margin:20px 0 16px;display:flex;align-items:center;gap:15px;min-height:88px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 20px}.guide-symbol{font-size:30px;font-weight:800;border:2px solid var(--accent);border-radius:10px;min-width:62px;text-align:center}.guide strong{font-size:21px}.keyboard-wrap{overflow-x:auto;padding:8px 4px}.keyboard{min-width:710px;max-width:940px;margin:auto}.row{display:flex;gap:6px;margin:6px 0}.key{position:relative;flex:1;min-width:0;height:49px;background:var(--key);border:1px solid var(--line);border-bottom:3px solid var(--finger,var(--line));border-radius:7px;text-align:center;display:flex;justify-content:center;align-items:center;font-size:20px}.key small{position:absolute;top:0;left:5px;font-size:11px;color:var(--muted)}.key.wide{flex:1.6;font-size:13px}.key.space{flex:7;font-size:15px}.key.rest{box-shadow:inset 0 -6px 0 color-mix(in srgb,var(--finger) 25%,transparent)}.next{outline:2px solid var(--finger,var(--accent));animation:pulse 1.5s infinite}.key.pressed{transform:translateY(2px)}.good{background:var(--good)!important;color:var(--bg)!important}.bad{background:var(--bad)!important;color:var(--bg)!important}@keyframes pulse{50%{box-shadow:0 0 17px color-mix(in srgb,var(--finger,var(--accent)) 50%,transparent)}}.hands{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin:22px auto;max-width:940px}.hand{display:flex;align-items:end;justify-content:center;gap:7px;min-height:125px}.finger{flex:1;max-width:78px;text-align:center;font-size:12px;color:var(--muted)}.finger-icon{width:30px;height:55px;margin:0 auto 9px;border:2px solid var(--finger);border-radius:18px 18px 8px 8px;background:color-mix(in srgb,var(--finger) 13%,var(--panel))}.finger:nth-child(2) .finger-icon{height:70px}.finger:nth-child(3) .finger-icon{height:82px}.finger:nth-child(4) .finger-icon{height:65px}.finger.thumb .finger-icon{height:38px;width:35px}.hand-title{text-align:center;font-size:14px;color:var(--muted)}.bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.history{display:flex;gap:8px;flex-wrap:wrap}.chip{background:var(--key);padding:5px 12px;border-radius:8px;border:1px solid var(--line)}details{margin:20px 0;color:var(--muted)}summary{cursor:pointer}dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:20px;width:min(560px,92vw);padding:28px}dialog::backdrop{background:#030911b8;backdrop-filter:blur(5px)}dialog .stats{grid-template-columns:repeat(3,1fr)}dialog .stat{padding:12px}footer{margin:24px 0;font-size:14px;color:var(--muted)}[hidden]{display:none!important}@media(max-width:700px){main{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.card{padding:17px}.bottom{grid-template-columns:1fr}.guide strong{font-size:17px}.hands{gap:12px}.finger{font-size:10px}.finger-icon{width:24px}.passage{font-size:22px}.tabs button{font-size:14px}.controls label,select{width:100%}}@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+/* Keep the next-key cue on the keyboard itself, without a central banner. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.keyboard-wrap{margin-top:20px;padding:12px 5px}
+.key{height:60px}
+.key.next{background:var(--finger,var(--accent));color:#10151d;border-color:var(--finger,var(--accent));outline:3px solid var(--finger,var(--accent));outline-offset:2px;font-size:29px;font-weight:800;padding-bottom:12px;z-index:1}
+.key.next::after{content:'Энд дар';position:absolute;bottom:1px;left:0;right:0;font:700 11px/1.2 system-ui,sans-serif;letter-spacing:0}
+.key.next small{color:#273448}
+.key.wide.next{font-size:15px}
+.key[data-code^="Shift"].next::after{content:'Хамт дар'}
+.finger-icon{display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:#10151d}
+.finger-icon.next{background:var(--finger);outline-offset:3px}
+.finger-icon.next::after{content:attr(data-cue)}
+.finger:has(.next){color:var(--ink);font-weight:700}
+</style>
+<main>
+<header><div class="brand"><span>Х</span>Хуруу <small>Монгол бичих дасгал</small></div><div class="actions"><button id="sound" aria-pressed="false">Дуу: унтраалттай</button><button id="theme" aria-pressed="false">Цайвар горим</button></div></header>
+<div class="spread"><div><h1>Арван хуруугаар, алдаагүй.</h1><p class="muted">Хурдаа бус, зөв дадлаа түрүүлж хөгжүүлээрэй.</p></div><small>Монгол кирилл · Стандарт байрлал</small></div>
+<nav class="tabs" aria-label="Дасгалын төрөл"><button data-mode="drill" aria-pressed="true">Хурууны дасгал</button><button data-mode="literature" aria-pressed="false">Уран зохиол</button><button data-mode="timed" aria-pressed="false">Хугацаатай сорил</button></nav>
+<div class="controls"><label>Дасгалаа сонгох<select id="lesson"></select></label><label id="durationLabel" hidden>Хугацаа<select id="duration"><option value="15">15 секунд</option><option value="30" selected>30 секунд</option><option value="60">60 секунд</option></select></label><button id="restart">Дахин эхлэх</button></div>
+<div class="stats"><div class="stat"><strong id="wpm">0</strong><span>Үг/мин</span></div><div class="stat"><strong id="accuracy">100%</strong><span>Нарийвчлал</span></div><div class="stat"><strong id="clock">0.0</strong><span id="clockLabel">Өнгөрсөн секунд</span></div><div class="stat"><strong id="best">0</strong><span>Дээд амжилт · үг/мин</span></div></div>
+<section id="practice" class="card practice" tabindex="0" aria-label="Бичих талбар" aria-describedby="instruction"><div class="spread"><h2 id="title"></h2><small id="position"></small></div><small id="source"></small><div id="passage" class="passage"></div><div class="spread"><small id="instruction">Энд дарж, гэрэлтсэн үсгээс эхлээрэй.</small><button id="start" class="primary">Бичиж эхлэх</button></div><progress id="progress" value="0" max="1" aria-label="Дасгалын явц"></progress></section>
+<div class="sr-only" role="status" aria-live="polite"><span id="guide"></span> <span id="shiftGuide"></span></div>
+<div class="keyboard-wrap"><div id="keyboard" class="keyboard" aria-label="Монгол кирилл гарын байрлал"></div></div>
+<div class="hands"><div><div id="leftHand" class="hand"></div><div class="hand-title">Зүүн гар</div></div><div><div id="rightHand" class="hand"></div><div class="hand-title">Баруун гар</div></div></div>
+<div class="bottom"><section class="card"><h2>Давтаж сурах үсгүүд</h2><p class="muted">Нийт дасгалд хамгийн олон алдсан үсгүүд.</p><div id="weakness" class="history"></div></section><section class="card"><h2>Таны ахиц</h2><p id="savedStats"></p><small id="storageStatus">Ахиц зөвхөн энэ хөтөч дээр хадгалагдана.</small></section></div>
+<details><summary>Зөв байрлал ба дасгалын заавар</summary><p>Үндсэн байрлал: зүүн гарын Й Ы Б Ө, баруун гарын Р О Л Д. Ө, Р товчийн товгорыг тэмтэрч гараа байрлуулаарай. Зайг аль нэг эрхий хуруугаар дарна.</p><p>Алдсан үсгээ зөв дарсны дараа үргэлжилнэ. Буцаах товчоор өмнөх үсэгт очиж болно. Өмнөх алдаа нарийвчлалын тооцоонд үлдэнэ. Хугацаа эхний үсгийг дарахад эхэлнэ. Хугацаатай сорилын цаг тасралтгүй явна.</p><p>Том үсгийг эсрэг гарын жижиг үсэг томруулах товчтой хамт дарна. Том үсгийн түгжээ энэ дасгалд үйлчлэхгүй. Нэг үгийг таван тэмдэгтээр тооцно. Үг/мин = зөв бичсэн тэмдэгт ÷ 5 ÷ минут.</p><p>Стандарт байрлалд Х нь баруун долоовор, Э нь зүүн долоовор, Ё нь зүүн дунд хуруунд хамаарна. Цэг нь дээд эгнээний 6, таслал нь 8 гэсэн товчинд байна. Тоог томруулах товчтой хамт дарна.</p><p>Компьютерийн бодит гар ашиглаарай. Дэлгэцийн гар нь байрлал заах зориулалттай.</p><p><a href="https://help.keyman.com/keyboard/basic_kbdmon/current-version" target="_blank" rel="noreferrer">Гарын байрлалын эх сурвалж</a> · <a href="https://dnom.mn/миний-нутаг/" target="_blank" rel="noreferrer">Шүлгийн эх сурвалж</a></p></details>
+<footer>Өдөр бүр бага багаар. Өөрийн хэмнэлээр.</footer>
+</main>
+<dialog id="result" aria-labelledby="resultTitle"><small>ДАСГАЛЫН ДҮН</small><h1 id="resultTitle">Сайн ажиллалаа!</h1><div class="stats"><div class="stat"><strong id="resultWpm"></strong><span>Үг/мин</span></div><div class="stat"><strong id="resultAccuracy"></strong><span>Нарийвчлал</span></div><div class="stat"><strong id="resultTime"></strong><span>Секунд</span></div></div><p id="advice"></p><p id="record" class="muted"></p><div class="actions"><button id="closeResult">Хаах</button><button id="again" class="primary">Дахин дасгал хийх</button></div></dialog>
+<script>
+'use strict';
+// Physical codes, independent of event.key and the OS input language.
+const keyMap = {};
+function mapRow(codes, letters) { codes.split(' ').forEach((code,i)=>keyMap[code]=[letters[i],letters[i].toUpperCase()]); }
+mapRow('KeyQ KeyW KeyE KeyR KeyT KeyY KeyU KeyI KeyO KeyP BracketLeft BracketRight','фцужэнгшүзкъ');
+mapRow('KeyA KeyS KeyD KeyF KeyG KeyH KeyJ KeyK KeyL Semicolon Quote','йыбөахролдп');
+mapRow('KeyZ KeyX KeyC KeyV KeyB KeyN KeyM Comma Period Slash','ячёсмитьвю');
+Object.assign(keyMap,{Backquote:['=','+'],Digit1:['№','1'],Digit2:['-','2'],Digit3:['"','3'],Digit4:['₮','4'],Digit5:[':','5'],Digit6:['.','6'],Digit7:['_','7'],Digit8:[',','8'],Digit9:['%','9'],Digit0:['?','0'],Minus:['е','Е'],Equal:['щ','Щ'],Backslash:['\\','|'],Space:[' ',' ']});
+const fingerMap = {
+ LP:{name:'Зүүн гарын чигчий хуруу',short:'Чигчий',color:'#ed91b9',codes:'Backquote Digit1 KeyQ KeyA KeyZ ShiftLeft'},
+ LR:{name:'Зүүн гарын ядам хуруу',short:'Ядам',color:'#c5a1f2',codes:'Digit2 KeyW KeyS KeyX'},
+ LM:{name:'Зүүн гарын дунд хуруу',short:'Дунд',color:'#8cb7f3',codes:'Digit3 KeyE KeyD KeyC'},
+ LI:{name:'Зүүн гарын долоовор хуруу',short:'Долоовор',color:'#69d3da',codes:'Digit4 Digit5 KeyR KeyT KeyF KeyG KeyV KeyB'},
+ LT:{name:'Зүүн гарын эрхий хуруу',short:'Эрхий',color:'#b5c7d9',codes:'Space'},
+ RT:{name:'Баруун гарын эрхий хуруу',short:'Эрхий',color:'#d7c8aa',codes:'Space'},
+ RI:{name:'Баруун гарын долоовор хуруу',short:'Долоовор',color:'#92d99b',codes:'Digit6 Digit7 KeyY KeyU KeyH KeyJ KeyN KeyM'},
+ RM:{name:'Баруун гарын дунд хуруу',short:'Дунд',color:'#e5d17d',codes:'Digit8 KeyI KeyK Comma'},
+ RR:{name:'Баруун гарын ядам хуруу',short:'Ядам',color:'#efb078',codes:'Digit9 KeyO KeyL Period'},
+ RP:{name:'Баруун гарын чигчий хуруу',short:'Чигчий',color:'#ef9290',codes:'Digit0 Minus Equal KeyP BracketLeft BracketRight Semicolon Quote Backslash Slash ShiftRight Backspace Enter'}
+};
+const codeFinger={}; Object.entries(fingerMap).forEach(([id,f])=>f.codes.split(' ').forEach(code=>codeFinger[code]=id));
+const reverseMap={}; Object.entries(keyMap).forEach(([code,pair])=>pair.forEach((char,i)=>{if(!reverseMap[char])reverseMap[char]={code,shift:!!i};}));
+const poems=[
+ {name:'Миний нутаг · Уулс',source:'Д. Нацагдорж · «Миний нутаг» · Эхний хоёр мөр',text:'Хэнтий, Хангай, Саяаны өндөр сайхан нуруунууд Хойд зүгийн чимэг болсон ой хөвч уулнууд'},
+ {name:'Миний нутаг · Гол мөрөн',source:'Д. Нацагдорж · «Миний нутаг» · Хоёрдугаар бадгийн хэсэг',text:'Хэрлэн, Онон, Туулын тунгалаг ариун мөрнүүд Хотол олны эм болсон горхи булаг рашаанууд'},
+ {name:'Эрдэм номын тухай',source:'Монгол ардын зүйр цэцэн үг',text:'Эрдмийг хичээлээр сурдаг, эрлийг сургаар олдог. Эзэн хичээвэл заяа хичээнэ.'},
+ {name:'Эв нэгдлийн тухай',source:'Монгол ардын зүйр цэцэн үг',text:'Эвт шаазгай буга барина. Дуслыг хураавал далай, дуулсныг хураавал эрдэм.'}
+];
+const drills=[{name:'Үндсэн эгнээ · Й Ы Б Ө / Р О Л Д',text:'й ы б ө р о л д йы бө ро лд өө рр йыбө ролд йыбө ролд'},
+ ...Object.entries(fingerMap).filter(([id])=>!id.endsWith('T')).map(([id,f])=>{const chars=f.codes.split(' ').filter(c=>keyMap[c]&&/[а-яөүё]/.test(keyMap[c][0])).map(c=>keyMap[c][0]);return {name:f.name+'ны дасгал',text:[chars.join(' '),chars.map(c=>c.repeat(3)).join(' '),chars.join(' ')].join(' ')};}),
+ {name:'Эрхий хуруу · Зай авах',text:'а а а о о о ө ө ө ү ү ү а о ө ү'},
+ {name:'Том үсэг ба тоо',text:'А Ө Ү О Й З Щ Ё 1 2 3 4 5 6 7 8 9 0 +'},
+ {name:'Цэг, таслал ба тэмдэг',text:'. , . , : ? - № ₮ % = + . ,'},
+ {name:'Нэмэлт · Ф Ы В А / О Л Д Ж',text:'ф ы в а о л д ж фыва олдж фыва олдж'},
+ {name:'Нэмэлт · З Х Э Щ Ъ Ё',text:'з х э щ ъ ё . , зз хх ээ щщ ъъ ёё . ,'}
+];
+const $=id=>document.getElementById(id), storageKey='khuuruu.mn.v1';
+let saved={best:0,bestAccuracy:0,sessions:0,mistakes:{},history:[],sound:false,light:false};
+let storageAvailable=true;
+try {const v=JSON.parse(localStorage.getItem(storageKey));if(v&&typeof v==='object'){
+ for(const k of ['best','bestAccuracy','sessions'])if(Number.isFinite(v[k])&&v[k]>=0)saved[k]=v[k];
+ for(const [char,n] of Object.entries(v.mistakes||{}))if(reverseMap[char]&&Number.isFinite(n)&&n>0)saved.mistakes[char]=n;
+ saved.history=Array.isArray(v.history)?v.history.slice(-50):[];saved.sound=v.sound===true;saved.light=v.light===true;
+}}catch{storageAvailable=false;}
+function persist(){try{localStorage.setItem(storageKey,JSON.stringify(saved));}catch{storageAvailable=false;}renderStored();}
+function renderStored(){ $('best').textContent=saved.best; $('savedStats').textContent=`${saved.sessions} дасгал дуусгасан · Шилдэг нарийвчлал ${saved.bestAccuracy}%`;
+ $('storageStatus').textContent=storageAvailable?'Ахиц зөвхөн энэ хөтөч дээр хадгалагдана.':'Хадгалах боломжгүй байна. Энэ удаагийн дасгал хэвийн ажиллана.';
+ $('weakness').replaceChildren();const top=Object.entries(saved.mistakes).sort((a,b)=>b[1]-a[1]).slice(0,6);
+ if(!top.length)$('weakness').textContent='Алдааны түүх хараахан алга.';
+ top.forEach(([c,n])=>{const el=document.createElement('span');el.className='chip';el.textContent=`${displayChar(c)} · ${n}`;el.title=fingerMap[codeFinger[reverseMap[c].code]].name;$('weakness').append(el);});
+}
+let mode='drill',text='',cursor=0,attempts=0,correctHits=0,mistakes={},started=null,elapsed=0,finished=false,timer=null,audioContext=null;
+const keyEls={},fingerEls={},feedbackTimers=new WeakMap();let expected=null;
+const rows=[['Backquote','Digit1','Digit2','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8','Digit9','Digit0','Minus','Equal','Backspace'],['Tab','KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyU','KeyI','KeyO','KeyP','BracketLeft','BracketRight','Backslash'],['CapsLock','KeyA','KeyS','KeyD','KeyF','KeyG','KeyH','KeyJ','KeyK','KeyL','Semicolon','Quote','Enter'],['ShiftLeft','KeyZ','KeyX','KeyC','KeyV','KeyB','KeyN','KeyM','Comma','Period','Slash','ShiftRight'],['Space']];
+const specialLabels={Backspace:'Буцаах',Tab:'Догол',CapsLock:'Том үсэг',Enter:'Оруулах',ShiftLeft:'⇧ Зүүн',ShiftRight:'Баруун ⇧',Space:'Зай авах'};
+rows.forEach((row,ri)=>{const el=document.createElement('div');el.className='row';if(ri===4)el.style.margin='6px 24%';row.forEach(code=>{const key=document.createElement('div');key.className='key'+(specialLabels[code]?' wide':'')+(code==='Space'?' space':'');key.dataset.code=code;
+ if(codeFinger[code])key.style.setProperty('--finger',fingerMap[codeFinger[code]].color);
+ const pair=keyMap[code];key.append(document.createTextNode(specialLabels[code]||(pair[0].toUpperCase())));
+ if(pair&&pair[0]!==pair[1]&&!/[а-яөүё]/.test(pair[0])){const small=document.createElement('small');small.textContent=pair[1];key.append(small);}
+ if(['KeyA','KeyS','KeyD','KeyF','KeyJ','KeyK','KeyL','Semicolon'].includes(code))key.classList.add('rest');
+ keyEls[code]=key;el.append(key);});$('keyboard').append(el);});
+Object.entries(fingerMap).forEach(([id,f])=>{const el=document.createElement('div');el.className='finger'+(id.endsWith('T')?' thumb':'');el.style.setProperty('--finger',f.color);el.title=f.name;const icon=document.createElement('div');icon.className='finger-icon';icon.setAttribute('aria-label',f.name);el.append(icon,document.createTextNode(f.short));fingerEls[id]=icon;$(id[0]==='L'?'leftHand':'rightHand').append(el);});
+function displayChar(c){return c===' '?'Зай':c;}
+function fillLessons(){ $('lesson').replaceChildren();(mode==='drill'?drills:poems).forEach((item,i)=>{const op=document.createElement('option');op.value=i;op.textContent=item.name;$('lesson').append(op);});$('durationLabel').hidden=mode!=='timed';reset();}
+function renderText(){const frag=document.createDocumentFragment();for(const c of text){const span=document.createElement('span');span.className='char';span.textContent=c;frag.append(span);}$('passage').replaceChildren(frag);updateTarget();}
+function updateTarget(){document.querySelectorAll('.next').forEach(el=>el.classList.remove('next'));expected=reverseMap[text[cursor]];
+ const chars=$('passage').children;for(let i=0;i<chars.length;i++)chars[i].className='char'+(i<cursor?' done':i===cursor?' current':'');
+ if(chars[cursor]){const target=chars[cursor];$('passage').scrollTop=Math.max(0,target.offsetTop-$('passage').offsetTop-40);}
+ $('position').textContent=`${cursor} / ${text.length}`;$('progress').value=cursor/text.length;
+ if(!expected)return;const id=codeFinger[expected.code];keyEls[expected.code].classList.add('next');
+ const ids=expected.code==='Space'?['LT','RT']:[id];ids.forEach(f=>{fingerEls[f].dataset.cue=expected.code==='Space'?'␣':text[cursor].toUpperCase();fingerEls[f].classList.add('next');});
+ $('guide').textContent=expected.code==='Space'?'Аль нэг эрхий хуруу ➔ [Зай]':`${fingerMap[id].name} ➔ [${text[cursor]}]`;
+ if(expected.shift){const opposite=id[0]==='L'?'RP':'LP',code=opposite==='LP'?'ShiftLeft':'ShiftRight';keyEls[code].classList.add('next');fingerEls[opposite].dataset.cue='⇧';fingerEls[opposite].classList.add('next');$('shiftGuide').textContent=`${fingerMap[opposite].name}гаар ⇧ товчийг хамт дарна.`;}
+ else $('shiftGuide').textContent='Гараа үндсэн байрлалд байлгаарай.';
+}
+function reset(){clearInterval(timer);timer=null;started=null;elapsed=0;finished=false;cursor=0;attempts=0;correctHits=0;mistakes={};
+ const item=(mode==='drill'?drills:poems)[Number($('lesson').value)||0];text=item.text; $('title').textContent=item.name;$('source').textContent=item.source||'Үндсэн эгнээ ба хурууны дасгал';$('instruction').textContent='Энд дарж, гэрэлтсэн үсгээс эхлээрэй.';$('start').hidden=false;
+ $('clockLabel').textContent=mode==='timed'?'Үлдсэн секунд':'Өнгөрсөн секунд';renderText();updateStats();}
+function getElapsed(){return started===null?0:(performance.now()-started)/1000;}
+function getWpm(){return elapsed>0?Math.round(cursor/5/(elapsed/60)):0;}
+function getAccuracy(){return attempts?Math.round(correctHits/attempts*1000)/10:100;}
+function updateStats(){$('wpm').textContent=getWpm();$('accuracy').textContent=getAccuracy()+'%';$('clock').textContent=(mode==='timed'?Math.max(0,Number($('duration').value)-elapsed):elapsed).toFixed(1);}
+function tick(){if(finished)return;elapsed=getElapsed();if(mode==='timed'&&elapsed>=Number($('duration').value)){elapsed=Number($('duration').value);finish();}else updateStats();}
+function flash(el,ok){if(!el)return;clearTimeout(feedbackTimers.get(el));el.classList.remove('good','bad');el.classList.add(ok?'good':'bad');feedbackTimers.set(el,setTimeout(()=>el.classList.remove('good','bad'),180));}
+function playSound(ok){if(!saved.sound)return;try{audioContext ||= new (window.AudioContext||window.webkitAudioContext)();if(audioContext.state==='suspended')audioContext.resume().catch(()=>{});const oscillator=audioContext.createOscillator(),gain=audioContext.createGain();oscillator.type='sine';oscillator.frequency.value=ok?660:170;gain.gain.setValueAtTime(.035,audioContext.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+.07);oscillator.connect(gain);gain.connect(audioContext.destination);oscillator.start();oscillator.stop(audioContext.currentTime+.075);}catch{}}
+function focusPractice(){$('practice').focus({preventScroll:true});$('instruction').textContent='Бэлэн. Дараагийн үсгийг гар дээрээ дараарай.';$('start').hidden=true;}
+$('practice').addEventListener('keydown',e=>{
+ if(e.target!==$('practice')||e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;
+ if(!keyMap[e.code]&&!['Backspace','ShiftLeft','ShiftRight','CapsLock'].includes(e.code))return;
+ e.preventDefault();if(e.repeat||finished)return;
+ if(started!==null){tick();if(finished)return;}
+ if(keyEls[e.code])keyEls[e.code].classList.add('pressed');
+ if(e.code.startsWith('Shift')||e.code==='CapsLock')return;
+ if(e.code==='Backspace'){if(cursor>0){cursor--;updateTarget();updateStats();}return;}
+ if(started===null){started=performance.now();timer=setInterval(tick,100);$('instruction').textContent='Алдсан үсгээ зөв дараад үргэлжлүүлээрэй.';$('start').hidden=true;}
+ const char=keyMap[e.code][Number(e.shiftKey)],target=text[cursor],ok=char===target;attempts++;
+ const finger=codeFinger[e.code];flash(keyEls[e.code],ok);flash(fingerEls[finger],ok);if(e.code==='Space')flash(fingerEls.LT,ok);
+ for(const code of ['ShiftLeft','ShiftRight'])if(keyEls[code].classList.contains('pressed')){flash(keyEls[code],ok);flash(fingerEls[codeFinger[code]],ok);}playSound(ok);
+ if(ok){correctHits++;cursor++;if(cursor===text.length&&mode==='timed'){text+=' '+poems[Number($('lesson').value)].text;renderText();}else updateTarget();}
+ else {mistakes[target]=(mistakes[target]||0)+1;saved.mistakes[target]=(saved.mistakes[target]||0)+1;persist();$('passage').children[cursor]?.classList.add('wrong');}
+ elapsed=getElapsed();updateStats();if(cursor===text.length)finish();
+});
+window.addEventListener('keyup',e=>keyEls[e.code]?.classList.remove('pressed'));
+window.addEventListener('blur',()=>document.querySelectorAll('.pressed').forEach(el=>el.classList.remove('pressed')));
+document.addEventListener('visibilitychange',()=>{if(started!==null&&!finished)tick();});
+function finish(){if(finished)return;finished=true;clearInterval(timer);updateStats();const wpm=getWpm(),acc=getAccuracy(),newRecord=wpm>saved.best;saved.best=Math.max(saved.best,wpm);saved.bestAccuracy=Math.max(saved.bestAccuracy,acc);saved.sessions++;
+ saved.history.push({date:new Date().toISOString(),mode,lesson:$('title').textContent,wpm,accuracy:acc,seconds:Math.round(elapsed*10)/10,mistakes:{...mistakes}});saved.history=saved.history.slice(-50);persist();
+ $('resultWpm').textContent=wpm;$('resultAccuracy').textContent=acc+'%';$('resultTime').textContent=elapsed.toFixed(1);const worst=Object.entries(mistakes).sort((a,b)=>b[1]-a[1])[0];
+ $('advice').textContent=worst?`${fingerMap[codeFinger[reverseMap[worst[0]].code]].name}гаар дардаг [${displayChar(worst[0])}] тэмдэгт дээр хамгийн их алдлаа (${worst[1]} удаа). Энэ товчийг удаан, зөв дарж давтаарай.`:'Алдаагүй бичлээ! Зөв хэмнэлээ хадгалж, дараагийн дасгалаа хийгээрэй.';
+ $('record').textContent=newRecord?'Шинэ дээд амжилт тогтоолоо!':'Өдөр бүр давтах нь зөв дадлыг бий болгоно.';$('instruction').textContent='Дасгал дууслаа. Дахин эхэлж болно.';$('result').showModal();
+}
+document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{mode=button.dataset.mode;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));fillLessons();}));
+$('lesson').addEventListener('change',reset);$('duration').addEventListener('change',reset);$('restart').addEventListener('click',()=>{reset();focusPractice();});$('start').addEventListener('click',focusPractice);
+$('practice').addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')focusPractice();});
+$('again').addEventListener('click',()=>{$('result').close();reset();focusPractice();});$('closeResult').addEventListener('click',()=>$('result').close());
+function applyPreferences(){document.documentElement.classList.toggle('light',saved.light);$('theme').textContent=saved.light?'Бараан горим':'Цайвар горим';$('theme').setAttribute('aria-pressed',String(saved.light));$('sound').textContent='Дуу: '+(saved.sound?'асаалттай':'унтраалттай');$('sound').setAttribute('aria-pressed',String(saved.sound));}
+$('theme').addEventListener('click',()=>{saved.light=!saved.light;applyPreferences();persist();});$('sound').addEventListener('click',()=>{saved.sound=!saved.sound;applyPreferences();persist();playSound(true);});
+applyPreferences();renderStored();fillLessons();
+</script>
+</html>
