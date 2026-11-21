@@ -1,0 +1,278 @@
+/* Хуруу — Монгол бичих дасгал */
+
+:root {
+  --bg: #10151d;
+  --panel: #19212c;
+  --ink: #edf3fa;
+  --muted: #a6b4c5;
+  --line: #324052;
+  --accent: #a6e6b5;
+  --good: #64e0a4;
+  --bad: #ff7e88;
+  --star: #f5d272;
+  --key: #202c3b;
+  color-scheme: dark;
+}
+
+:root.light {
+  --bg: #f2f5fa;
+  --panel: #fff;
+  --ink: #1b293b;
+  --muted: #52647a;
+  --line: #d4deeb;
+  --accent: #216c44;
+  --good: #117747;
+  --bad: #c32e43;
+  --star: #a8700a;
+  --key: #f3f6fc;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 system-ui, Segoe UI, sans-serif;
+}
+
+button, select {
+  font: inherit;
+  color: inherit;
+  background: var(--key);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 14px;
+}
+
+button { cursor: pointer }
+button:hover { border-color: var(--accent) }
+button:disabled { opacity: .45; cursor: not-allowed }
+button:focus-visible, select:focus-visible, summary:focus-visible, input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+a { color: var(--accent) }
+main { max-width: 1180px; margin: auto; padding: 26px }
+
+header, .spread, .actions, .tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+header { padding-bottom: 24px; border-bottom: 1px solid var(--line) }
+.brand { font-size: 24px; font-weight: 800; letter-spacing: .02em }
+.brand span {
+  background: var(--accent);
+  color: var(--bg);
+  padding: 3px 10px;
+  border-radius: 9px;
+  margin-right: 9px;
+}
+
+.muted, small { color: var(--muted) }
+small { font-size: 14px }
+h1 { font-size: clamp(26px, 4vw, 38px); line-height: 1.2; margin: 25px 0 8px }
+h2 { font-size: 19px; margin: 0 0 10px }
+p { margin: 8px 0 }
+
+.tabs { justify-content: flex-start; margin: 24px 0 16px }
+.tabs button[aria-pressed=true], .primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.controls { display: flex; gap: 16px; align-items: end; flex-wrap: wrap; margin-bottom: 18px }
+label { display: grid; gap: 5px; color: var(--muted); font-size: 14px }
+select { min-width: 280px; max-width: 100%; color: var(--ink) }
+
+/* ---------- Статистик ---------- */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0 }
+.stat, .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px }
+.stat { padding: 14px 20px }
+.stat strong { display: block; font-size: 29px; line-height: 1.3; font-variant-numeric: tabular-nums }
+.stat span { font-size: 14px; color: var(--muted) }
+.card { padding: 24px }
+
+/* ---------- Бичих талбар ---------- */
+.practice { outline: none; cursor: text }
+.practice:focus { border-color: var(--accent) }
+.passage {
+  font: 25px/1.95 ui-monospace, Consolas, monospace;
+  letter-spacing: .025em;
+  max-height: 160px;
+  overflow: auto;
+  margin: 16px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  scrollbar-width: thin;
+}
+.char { border-bottom: 2px solid transparent }
+.char.done { color: var(--good) }
+.char.current {
+  color: var(--ink);
+  background: var(--key);
+  border-bottom: 3px solid var(--accent);
+}
+.char.wrong { background: var(--bad); color: var(--bg) }
+progress { width: 100%; height: 5px; accent-color: var(--accent); display: block; margin-top: 18px }
+
+/* ---------- Гар ---------- */
+.keyboard-wrap { overflow-x: auto; margin-top: 20px; padding: 12px 5px }
+.keyboard { min-width: 710px; max-width: 940px; margin: auto }
+.row { display: flex; gap: 6px; margin: 6px 0 }
+.key {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 60px;
+  background: var(--key);
+  border: 1px solid var(--line);
+  border-bottom: 3px solid var(--finger, var(--line));
+  border-radius: 7px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+}
+.key small { position: absolute; top: 0; left: 5px; font-size: 11px; color: var(--muted) }
+.key.wide { flex: 1.6; font-size: 13px }
+.key.space { flex: 7; font-size: 15px }
+.key.rest { box-shadow: inset 0 -6px 0 color-mix(in srgb, var(--finger) 25%, transparent) }
+.key.pressed { transform: translateY(2px) }
+
+/* Дараагийн товчийг гар дээр шууд заана */
+.key.next {
+  background: var(--finger, var(--accent));
+  color: #10151d;
+  border-color: var(--finger, var(--accent));
+  outline: 3px solid var(--finger, var(--accent));
+  outline-offset: 2px;
+  font-size: 29px;
+  font-weight: 800;
+  padding-bottom: 12px;
+  z-index: 1;
+  animation: pulse 1.5s infinite;
+}
+.key.next::after {
+  content: 'Энд дар';
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  right: 0;
+  font: 700 11px/1.2 system-ui, sans-serif;
+  letter-spacing: 0;
+}
+.key.next small { color: #273448 }
+.key.wide.next { font-size: 15px }
+.key[data-code^="Shift"].next::after { content: 'Хамт дар' }
+
+.good { background: var(--good) !important; color: var(--bg) !important }
+.bad { background: var(--bad) !important; color: var(--bg) !important }
+@keyframes pulse { 50% { box-shadow: 0 0 17px color-mix(in srgb, var(--finger, var(--accent)) 50%, transparent) } }
+
+/* ---------- Хурууны зураг ---------- */
+.hands { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 22px auto; max-width: 940px }
+.hand { display: flex; align-items: end; justify-content: center; gap: 7px; min-height: 125px }
+.finger { flex: 1; max-width: 78px; text-align: center; font-size: 12px; color: var(--muted) }
+.finger-icon {
+  width: 30px;
+  height: 55px;
+  margin: 0 auto 9px;
+  border: 2px solid var(--finger);
+  border-radius: 18px 18px 8px 8px;
+  background: color-mix(in srgb, var(--finger) 13%, var(--panel));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  font-weight: 800;
+  color: #10151d;
+}
+.finger:nth-child(2) .finger-icon { height: 70px }
+.finger:nth-child(3) .finger-icon { height: 82px }
+.finger:nth-child(4) .finger-icon { height: 65px }
+.finger.thumb .finger-icon { height: 38px; width: 35px }
+.finger-icon.next { background: var(--finger); outline-offset: 3px }
+.finger-icon.next::after { content: attr(data-cue) }
+.finger:has(.next) { color: var(--ink); font-weight: 700 }
+.hand-title { text-align: center; font-size: 14px; color: var(--muted) }
+
+/* ---------- Доод хэсэг ---------- */
+.bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px }
+.history { display: flex; gap: 8px; flex-wrap: wrap }
+.chip { background: var(--key); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--line) }
+.card .actions { margin-top: 14px; justify-content: flex-start }
+
+.progress-list { display: grid; gap: 8px; margin: 0 0 12px }
+.progress-row { display: flex; justify-content: space-between; gap: 10px; font-size: 14px }
+.progress-row span:first-child { color: var(--muted) }
+.progress-row b { font-variant-numeric: tabular-nums }
+.stars { color: var(--star); letter-spacing: .08em }
+.streak { font-size: 15px }
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.toggle input { width: 17px; height: 17px; accent-color: var(--accent) }
+
+details { margin: 20px 0; color: var(--muted) }
+summary { cursor: pointer }
+
+/* ---------- Дүнгийн цонх ---------- */
+dialog {
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  width: min(560px, 92vw);
+  padding: 28px;
+}
+dialog::backdrop { background: #030911b8; backdrop-filter: blur(5px) }
+dialog .stats { grid-template-columns: repeat(3, 1fr) }
+dialog .stat { padding: 12px }
+.result-stars { font-size: 38px; letter-spacing: .1em; color: var(--star); margin: 4px 0 }
+
+footer { margin: 24px 0; font-size: 14px; color: var(--muted) }
+[hidden] { display: none !important }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 700px) {
+  main { padding: 16px }
+  .stats { grid-template-columns: repeat(2, 1fr) }
+  .card { padding: 17px }
+  .bottom { grid-template-columns: 1fr }
+  .hands { gap: 12px }
+  .finger { font-size: 10px }
+  .finger-icon { width: 24px }
+  .passage { font-size: 22px }
+  .tabs button { font-size: 14px }
+  .controls label, select { width: 100% }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; scroll-behavior: auto !important }
+}
