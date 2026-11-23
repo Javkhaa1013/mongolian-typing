@@ -1,30 +1,37 @@
-/* Хуруу — Монгол бичих дасгал */
+/* Гэгээ бичих дасгал — Gegee International School
+   Брэнд өнгө: улбар шар #ffaa00, шар #ffcc00, хар #1a1a1a */
 
 :root {
-  --bg: #10151d;
-  --panel: #19212c;
-  --ink: #edf3fa;
-  --muted: #a6b4c5;
-  --line: #324052;
-  --accent: #a6e6b5;
-  --good: #64e0a4;
-  --bad: #ff7e88;
-  --star: #f5d272;
-  --key: #202c3b;
+  --bg: #16140f;
+  --panel: #201d16;
+  --ink: #f7f3ea;
+  --muted: #b3aa98;
+  --line: #3a352a;
+  --accent: #ffaa00;
+  --accent-soft: #ffcc00;
+  --on-accent: #1a1a1a;
+  --link: #ffbe3d;
+  --good: #5fd39a;
+  --bad: #ff7a85;
+  --star: #ffcc00;
+  --key: #2a261d;
   color-scheme: dark;
 }
 
 :root.light {
-  --bg: #f2f5fa;
+  --bg: #fff9ef;
   --panel: #fff;
-  --ink: #1b293b;
-  --muted: #52647a;
-  --line: #d4deeb;
-  --accent: #216c44;
-  --good: #117747;
-  --bad: #c32e43;
+  --ink: #1a1a1a;
+  --muted: #6d6456;
+  --line: #ecdcbf;
+  --accent: #ffaa00;
+  --accent-soft: #ffcc00;
+  --on-accent: #1a1a1a;
+  --link: #9a5b00;
+  --good: #0f7a4a;
+  --bad: #c42a3f;
   --star: #a8700a;
-  --key: #f3f6fc;
+  --key: #fff4e0;
   color-scheme: light;
 }
 
@@ -54,7 +61,7 @@ button:focus-visible, select:focus-visible, summary:focus-visible, input:focus-v
   outline-offset: 3px;
 }
 
-a { color: var(--accent) }
+a { color: var(--link) }
 main { max-width: 1180px; margin: auto; padding: 26px }
 
 header, .spread, .actions, .tabs {
@@ -66,13 +73,17 @@ header, .spread, .actions, .tabs {
 }
 
 header { padding-bottom: 24px; border-bottom: 1px solid var(--line) }
-.brand { font-size: 24px; font-weight: 800; letter-spacing: .02em }
-.brand span {
-  background: var(--accent);
-  color: var(--bg);
-  padding: 3px 10px;
-  border-radius: 9px;
-  margin-right: 9px;
+.brand { display: flex; align-items: center; gap: 14px }
+.brand .logo { height: 44px; width: auto; display: block }
+.brand .logo-light { display: none }
+:root.light .brand .logo-dark { display: none }
+:root.light .brand .logo-light { display: block }
+.brand-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .01em;
+  padding-left: 14px;
+  border-left: 1px solid var(--line);
 }
 
 .muted, small { color: var(--muted) }
@@ -84,7 +95,7 @@ p { margin: 8px 0 }
 .tabs { justify-content: flex-start; margin: 24px 0 16px }
 .tabs button[aria-pressed=true], .primary {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
   border-color: var(--accent);
   font-weight: 700;
 }

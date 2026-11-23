@@ -2,7 +2,7 @@
   "name": "khuuruu",
   "version": "2.0.0",
   "private": true,
-  "description": "Хуруу — Монгол кирилл бичих дасгал",
+  "description": "Гэгээ бичих дасгал — Монгол кирилл бичих дасгал, Gegee International School",
   "type": "module",
   "scripts": {
     "check": "node scripts/check.mjs",
