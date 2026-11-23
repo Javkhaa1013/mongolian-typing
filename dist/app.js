@@ -14,6 +14,9 @@
   const STORE_KEY = 'khuuruu.mn.v2';
   const LEGACY_KEY = 'khuuruu.mn.v1';
   const MAX_HISTORY = 200;
+  const MAX_CUSTOM = 50;   /* өөрийн нэмсэн текстийн дээд тоо */
+  const MAX_TEXT = 5000;   /* нэг текстийн дээд урт */
+  const MIN_TEXT = 20;
 
   let storageAvailable = true;
 
@@ -26,6 +29,7 @@
       mistakes: {},
       lessons: {},
       history: [],
+      customTexts: [],
       streak: { count: 0, last: null },
       sound: false,
       light: false,
@@ -54,6 +58,22 @@
 
     if (Array.isArray(v.history)) {
       next.history = v.history.filter(entry => entry && typeof entry === 'object').slice(-MAX_HISTORY);
+    }
+
+    if (Array.isArray(v.customTexts)) {
+      v.customTexts.slice(0, MAX_CUSTOM).forEach(item => {
+        if (!item || typeof item !== 'object') return;
+        const clean = C.sanitizeText(item.text);
+        if (clean.text.length < MIN_TEXT) return;
+        next.customTexts.push({
+          key: typeof item.key === 'string' && item.key.indexOf('c-') === 0 ? item.key : 'c-' + newId(),
+          name: String(item.name || 'Миний текст').slice(0, 60),
+          source: String(item.source || 'Өөрийн нэмсэн текст').slice(0, 80),
+          text: clean.text.slice(0, MAX_TEXT),
+          at: typeof item.at === 'string' ? item.at : null,
+          custom: true
+        });
+      });
     }
 
     const known = {};
@@ -183,7 +203,7 @@
       const weak = C.weakDrill(saved.mistakes);
       return (weak ? [weak] : []).concat(C.fingerDrills);
     }
-    return C.texts;
+    return C.texts.concat(saved.customTexts);
   }
 
   function pickIndex(keepKey) {
@@ -222,7 +242,7 @@
       list.forEach((item, i) => {
         const option = document.createElement('option');
         option.value = String(i);
-        option.textContent = item.name;
+        option.textContent = (item.custom ? '✎ ' : '') + item.name;
         select.append(option);
       });
     }
@@ -279,8 +299,9 @@
 
   /* Урт сорилд нэг текст давтагдахгүйн тулд өөр текст залгана */
   function nextTimedText() {
-    const others = C.texts.filter(item => !current || item.key !== current.key);
-    const pool = others.length ? others : C.texts;
+    const all = C.texts.concat(saved.customTexts);
+    const others = all.filter(item => !current || item.key !== current.key);
+    const pool = others.length ? others : all;
     return pool[Math.floor(Math.random() * pool.length)].text;
   }
 
@@ -372,8 +393,15 @@
     $('start').hidden = false;
     $('clockLabel').textContent = mode === 'timed' ? 'Үлдсэн хугацаа' : 'Өнгөрсөн хугацаа';
 
+    updateTextButtons();
     renderText();
     updateStats();
+  }
+
+  function updateTextButtons() {
+    const literature = mode === 'literature';
+    $('addText').hidden = !literature;
+    $('deleteText').hidden = !(literature && current && current.custom);
   }
 
   /* ======================= Хэмжүүр ======================= */
@@ -871,7 +899,81 @@
     reader.readAsText(file);
   }
 
+  /* ======================= Өөрийн текст ======================= */
+
+  function describeText(raw) {
+    const clean = C.sanitizeText(raw);
+    const parts = [];
+    if (!clean.text) return { clean: clean, note: 'Текстээ оруулна уу.', state: '' };
+    parts.push(clean.text.length + ' тэмдэгт');
+    if (clean.text.length < MIN_TEXT) {
+      parts.push('дор хаяж ' + MIN_TEXT + ' тэмдэгт байх ёстой');
+      return { clean: clean, note: parts.join(' · '), state: 'warn' };
+    }
+    if (clean.fixed) parts.push(clean.fixed + ' тэмдэгтийг зассан');
+    if (clean.removed.length) {
+      parts.push('хассан: ' + clean.removed.slice(0, 12).map(displayChar).join(' '));
+    }
+    parts.push('дасгалд бэлэн');
+    return { clean: clean, note: parts.join(' · '), state: clean.removed.length ? 'warn' : 'ok' };
+  }
+
+  function updateTextNote() {
+    const info = describeText($('textBody').value);
+    const note = $('textNote');
+    note.textContent = info.note;
+    note.className = 'muted ' + info.state;
+    $('textSave').disabled = info.clean.text.length < MIN_TEXT;
+    return info;
+  }
+
+  function openTextDialog() {
+    $('textName').value = '';
+    $('textSource').value = '';
+    $('textBody').value = '';
+    updateTextNote();
+    $('textDialog').showModal();
+    $('textName').focus();
+  }
+
+  function saveCustomText() {
+    const info = updateTextNote();
+    if (info.clean.text.length < MIN_TEXT) return;
+    if (saved.customTexts.length >= MAX_CUSTOM) {
+      window.alert('Хамгийн ихдээ ' + MAX_CUSTOM + ' текст хадгалж болно. Хуучнаас нь устгана уу.');
+      return;
+    }
+    const name = $('textName').value.trim().slice(0, 60) ||
+      'Миний текст ' + (saved.customTexts.length + 1);
+    const item = {
+      key: 'c-' + newId(),
+      name: name,
+      source: $('textSource').value.trim().slice(0, 80) || 'Өөрийн нэмсэн текст',
+      text: info.clean.text.slice(0, MAX_TEXT),
+      at: new Date().toISOString(),
+      custom: true
+    };
+    saved.customTexts.push(item);
+    writeNow();
+    $('textDialog').close();
+    setMode('literature', item.key);
+  }
+
+  function deleteCustomText() {
+    if (!current || !current.custom) return;
+    if (!window.confirm('«' + current.name + '» текстийг устгах уу?')) return;
+    saved.customTexts = saved.customTexts.filter(item => item.key !== current.key);
+    writeNow();
+    setMode('literature');
+  }
+
   /* ======================= Үйл явдлууд ======================= */
+
+  $('addText').addEventListener('click', openTextDialog);
+  $('deleteText').addEventListener('click', deleteCustomText);
+  $('textBody').addEventListener('input', updateTextNote);
+  $('textCancel').addEventListener('click', () => $('textDialog').close());
+  $('textSave').addEventListener('click', saveCustomText);
 
   $('exportCsv').addEventListener('click', exportCsv);
   $('backup').addEventListener('click', backup);

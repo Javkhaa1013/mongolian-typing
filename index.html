@@ -46,6 +46,8 @@
       </select>
     </label>
     <button id="restart">Дахин эхлэх</button>
+    <button id="addText" hidden>Текст нэмэх</button>
+    <button id="deleteText" hidden>Устгах</button>
   </div>
 
   <div class="stats">
@@ -161,6 +163,21 @@
     <button id="closeResult">Хаах</button>
     <button id="again">Дахин хийх</button>
     <button id="nextLesson" class="primary" hidden>Дараагийн дасгал</button>
+  </div>
+</dialog>
+
+<dialog id="textDialog" aria-labelledby="textDialogTitle">
+  <h2 id="textDialogTitle">Өөрийн текст нэмэх</h2>
+  <p class="muted">Шүлэг, өгүүллэг, хичээлийн текстээ хуулж тавина. Монгол гар дээр байхгүй тэмдэгтийг («», —, ! г.м.) автоматаар засна.</p>
+  <div class="form">
+    <label>Нэр<input id="textName" type="text" maxlength="60" placeholder="Жишээ: Ээжийн тухай шүлэг"></label>
+    <label>Эх сурвалж (заавал биш)<input id="textSource" type="text" maxlength="80" placeholder="Зохиолч, ном, сурах бичиг"></label>
+    <label>Текст<textarea id="textBody" rows="7" maxlength="5000" placeholder="Текстээ энд хуулж тавина"></textarea></label>
+  </div>
+  <p id="textNote" class="muted"></p>
+  <div class="actions">
+    <button id="textCancel">Болих</button>
+    <button id="textSave" class="primary">Хадгалах</button>
   </div>
 </dialog>
 

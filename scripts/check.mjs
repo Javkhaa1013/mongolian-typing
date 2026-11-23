@@ -93,6 +93,16 @@ if (!weak) fail('weakDrill хоосон буцлаа');
 else if (typeable(weak.text).length) fail('weakDrill: бичиж болохгүй тэмдэгт');
 if (C.weakDrill({}) !== null) fail('weakDrill хоосон түүх дээр null буцаах ёстой');
 
+/* 11. Гаднаас хуулсан текстийг цэвэрлэгч */
+const dirty = C.sanitizeText('«Сайн  байна уу!» — гэж\nасуув… (тийм) ok');
+const left = typeable(dirty.text);
+if (left.length) fail(`sanitizeText: бичигдэхгүй тэмдэгт үлдлээ ${JSON.stringify(left)}`);
+if (/\s{2,}/.test(dirty.text)) fail('sanitizeText: давхар зай үлдлээ');
+if (dirty.text !== dirty.text.trim()) fail('sanitizeText: мөрийн эхэнд/төгсгөлд зай үлдлээ');
+if (!dirty.fixed) fail('sanitizeText: солих ёстой тэмдэгтийг тоолоогүй');
+if (dirty.removed.indexOf('o') === -1) fail('sanitizeText: латин үсгийг хасаагүй');
+if (C.sanitizeText(null).text !== '') fail('sanitizeText: хоосон утгыг зохицуулаагүй');
+
 /* ---------------- Дүн ---------------- */
 const stats = {
   'дасгалын замнал': C.curriculum.length,

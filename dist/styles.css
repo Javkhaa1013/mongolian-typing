@@ -260,6 +260,20 @@ dialog .stats { grid-template-columns: repeat(3, 1fr) }
 dialog .stat { padding: 12px }
 .result-stars { font-size: 38px; letter-spacing: .1em; color: var(--star); margin: 4px 0 }
 
+.form { display: grid; gap: 14px; margin: 18px 0 }
+input[type=text], textarea {
+  font: inherit;
+  color: var(--ink);
+  background: var(--key);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  width: 100%;
+}
+textarea { resize: vertical; min-height: 120px; line-height: 1.6 }
+#textNote.warn { color: var(--bad) }
+#textNote.ok { color: var(--good) }
+
 footer { margin: 24px 0; font-size: 14px; color: var(--muted) }
 [hidden] { display: none !important }
 
