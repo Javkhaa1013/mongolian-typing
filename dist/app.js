@@ -16,21 +16,74 @@
   const MAX_HISTORY = 200;
 
   let storageAvailable = true;
-  let saved = {
-    version: 2,
-    bestCpm: 0,
-    bestAccuracy: 0,
-    sessions: 0,
-    mistakes: {},
-    lessons: {},
-    history: [],
-    streak: { count: 0, last: null },
-    sound: false,
-    light: false,
-    unlockAll: false
-  };
+
+  function defaults() {
+    return {
+      version: 2,
+      bestCpm: 0,
+      bestAccuracy: 0,
+      sessions: 0,
+      mistakes: {},
+      lessons: {},
+      history: [],
+      streak: { count: 0, last: null },
+      sound: false,
+      light: false,
+      unlockAll: false
+    };
+  }
+
+  let saved = defaults();
 
   const positive = v => (Number.isFinite(v) && v >= 0 ? v : 0);
+
+  /* Гаднаас ирсэн өгөгдлийг шалгаж байж хүлээн авна (хадгалсан файл ч мөн адил) */
+  function applyData(v, legacy) {
+    if (!v || typeof v !== 'object') return false;
+    const next = defaults();
+
+    /* v1 дээр дээд амжилт нь үг/мин байсан */
+    next.bestCpm = legacy ? Math.round(positive(v.best) * 5) : positive(v.bestCpm);
+    next.bestAccuracy = positive(v.bestAccuracy);
+    next.sessions = positive(v.sessions);
+
+    Object.keys(v.mistakes || {}).forEach(ch => {
+      const n = v.mistakes[ch];
+      if (reverseMap[ch] && Number.isFinite(n) && n > 0) next.mistakes[ch] = n;
+    });
+
+    if (Array.isArray(v.history)) {
+      next.history = v.history.filter(entry => entry && typeof entry === 'object').slice(-MAX_HISTORY);
+    }
+
+    const known = {};
+    C.curriculum.forEach(lesson => { known[lesson.key] = true; });
+    Object.keys(v.lessons || {}).forEach(key => {
+      const p = v.lessons[key];
+      if (!known[key] || !p || typeof p !== 'object') return;
+      next.lessons[key] = {
+        stars: Math.min(3, positive(p.stars)),
+        bestCpm: positive(p.bestCpm),
+        bestAccuracy: positive(p.bestAccuracy),
+        passes: positive(p.passes),
+        last: typeof p.last === 'string' ? p.last : null
+      };
+    });
+
+    if (v.streak && typeof v.streak === 'object') {
+      next.streak = {
+        count: positive(v.streak.count),
+        last: typeof v.streak.last === 'string' ? v.streak.last : null
+      };
+    }
+
+    next.sound = v.sound === true;
+    next.light = v.light === true;
+    next.unlockAll = v.unlockAll === true;
+
+    saved = next;
+    return true;
+  }
 
   function loadSaved() {
     let raw = null, legacy = false;
@@ -41,46 +94,7 @@
     if (!raw) return;
     let v;
     try { v = JSON.parse(raw); } catch (err) { return; }
-    if (!v || typeof v !== 'object') return;
-
-    /* v1 дээр дээд амжилт нь үг/мин байсан */
-    if (legacy) saved.bestCpm = Math.round(positive(v.best) * 5);
-    else saved.bestCpm = positive(v.bestCpm);
-
-    saved.bestAccuracy = positive(v.bestAccuracy);
-    saved.sessions = positive(v.sessions);
-
-    Object.keys(v.mistakes || {}).forEach(ch => {
-      const n = v.mistakes[ch];
-      if (reverseMap[ch] && Number.isFinite(n) && n > 0) saved.mistakes[ch] = n;
-    });
-
-    if (Array.isArray(v.history)) saved.history = v.history.slice(-MAX_HISTORY);
-
-    const known = {};
-    C.curriculum.forEach(lesson => { known[lesson.key] = true; });
-    Object.keys(v.lessons || {}).forEach(key => {
-      const p = v.lessons[key];
-      if (!known[key] || !p || typeof p !== 'object') return;
-      saved.lessons[key] = {
-        stars: Math.min(3, positive(p.stars)),
-        bestCpm: positive(p.bestCpm),
-        bestAccuracy: positive(p.bestAccuracy),
-        passes: positive(p.passes),
-        last: typeof p.last === 'string' ? p.last : null
-      };
-    });
-
-    if (v.streak && typeof v.streak === 'object') {
-      saved.streak = {
-        count: positive(v.streak.count),
-        last: typeof v.streak.last === 'string' ? v.streak.last : null
-      };
-    }
-
-    saved.sound = v.sound === true;
-    saved.light = v.light === true;
-    saved.unlockAll = v.unlockAll === true;
+    applyData(v, legacy);
   }
 
   let persistTimer = null;
@@ -94,7 +108,7 @@
   function persistLater() {
     if (!persistTimer) persistTimer = setTimeout(() => { persistTimer = null; writeNow(); }, 800);
   }
-  function persist() { writeNow(); renderProgress(); }
+  function persist() { writeNow(); renderProgress(); renderHistory(); }
 
   window.addEventListener('pagehide', writeNow);
   document.addEventListener('visibilitychange', () => {
@@ -263,6 +277,13 @@
     updateTarget();
   }
 
+  /* Урт сорилд нэг текст давтагдахгүйн тулд өөр текст залгана */
+  function nextTimedText() {
+    const others = C.texts.filter(item => !current || item.key !== current.key);
+    const pool = others.length ? others : C.texts;
+    return pool[Math.floor(Math.random() * pool.length)].text;
+  }
+
   /* Хугацаатай сорилд текст урсгалаар нэмэгдэнэ — зөвхөн шинэ тэмдэгтийг зурна */
   function appendText(extra) {
     text += extra;
@@ -349,7 +370,7 @@
       : '';
     $('instruction').textContent = 'Энд дарж, гэрэлтсэн үсгээс эхлээрэй.';
     $('start').hidden = false;
-    $('clockLabel').textContent = mode === 'timed' ? 'Үлдсэн секунд' : 'Өнгөрсөн секунд';
+    $('clockLabel').textContent = mode === 'timed' ? 'Үлдсэн хугацаа' : 'Өнгөрсөн хугацаа';
 
     renderText();
     updateStats();
@@ -364,12 +385,20 @@
   const getAccuracy = () => (firstAttempts ? Math.round(firstCorrect / firstAttempts * 1000) / 10 : 100);
   const getRawAccuracy = () => (attempts ? Math.round(correctHits / attempts * 1000) / 10 : 100);
 
+  /* 60 секундээс дээш бол минут:секунд */
+  function formatClock(seconds) {
+    if (seconds >= 60) {
+      return Math.floor(seconds / 60) + ':' + String(Math.floor(seconds % 60)).padStart(2, '0');
+    }
+    return seconds.toFixed(1);
+  }
+
   function updateStats() {
     $('cpm').textContent = getCpm();
     $('accuracy').textContent = getAccuracy() + '%';
-    $('clock').textContent = (mode === 'timed'
+    $('clock').textContent = formatClock(mode === 'timed'
       ? Math.max(0, Number($('duration').value) - elapsed)
-      : elapsed).toFixed(1);
+      : elapsed);
   }
 
   function tick() {
@@ -474,7 +503,7 @@
     if (ok) {
       correctHits++;
       cursor++;
-      if (cursor === text.length && mode === 'timed' && current) appendText(' ' + current.text);
+      if (cursor === text.length && mode === 'timed') appendText(' ' + nextTimedText());
       updateTarget();
     } else {
       mistakes[target] = (mistakes[target] || 0) + 1;
@@ -506,11 +535,12 @@
     return 1;
   }
 
-  function dayKey(date) {
-    return [date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, '0'),
-      String(date.getDate()).padStart(2, '0')].join('-');
-  }
+  const pad = n => String(n).padStart(2, '0');
+  const dayKey = date => date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate());
+  const timeOf = date => pad(date.getHours()) + ':' + pad(date.getMinutes());
+  const shortDate = date => date.getFullYear() + '.' + pad(date.getMonth() + 1) + '.' + pad(date.getDate());
+  const longDate = date => date.getFullYear() + ' оны ' + (date.getMonth() + 1) + ' сарын ' +
+    date.getDate() + ', ' + timeOf(date);
 
   function bumpStreak() {
     const today = dayKey(new Date());
@@ -594,7 +624,8 @@
     $('resultStars').hidden = !course;
     $('resultCpm').textContent = cpm;
     $('resultAccuracy').textContent = accuracy + '%';
-    $('resultTime').textContent = elapsed.toFixed(1);
+    $('resultTime').textContent = formatClock(elapsed);
+    $('resultDate').textContent = longDate(new Date()) + ' · үр дүн хадгалагдлаа';
 
     const worst = Object.keys(mistakes).sort((a, b) => mistakes[b] - mistakes[a])[0];
     const advice = [];
@@ -670,7 +701,193 @@
     });
   }
 
+  /* ======================= Дасгалын түүх ======================= */
+
+  const MODE_LABELS = {
+    course: 'Замнал',
+    fingers: 'Хуруу',
+    literature: 'Уран зохиол',
+    timed: 'Хугацаатай'
+  };
+
+  let historyExpanded = false;
+
+  /* Хуучин (v1) бичлэгүүдийг ч уншиж чадна */
+  function normalizeEntry(entry) {
+    const at = typeof entry.at === 'string' ? entry.at
+      : (typeof entry.date === 'string' ? entry.date : null);
+    const cpm = Number.isFinite(entry.cpm) ? entry.cpm
+      : (Number.isFinite(entry.wpm) ? entry.wpm * 5 : 0);
+    const date = at ? new Date(at) : null;
+    return {
+      at: at,
+      date: date && !isNaN(date.getTime()) ? date : null,
+      mode: entry.mode || '',
+      lessonName: entry.lessonName || entry.lesson || '—',
+      cpm: Math.round(cpm),
+      wpm: Number.isFinite(entry.wpm) ? entry.wpm : Math.round(cpm / 5),
+      accuracy: Number.isFinite(entry.accuracy) ? entry.accuracy : 0,
+      rawAccuracy: Number.isFinite(entry.rawAccuracy) ? entry.rawAccuracy
+        : (Number.isFinite(entry.accuracy) ? entry.accuracy : 0),
+      chars: positive(entry.chars),
+      attempts: positive(entry.attempts),
+      errors: positive(entry.errors),
+      seconds: Number.isFinite(entry.seconds) ? entry.seconds : 0,
+      stars: Math.min(3, positive(entry.stars))
+    };
+  }
+
+  /* Шинэ нь эхэндээ. Нөөцөөс сэргээсэн бичлэг дарааллаа алдаж болох тул огноогоор эрэмбэлнэ. */
+  function historyEntries() {
+    return saved.history.map(normalizeEntry)
+      .filter(entry => entry.date)
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
+  }
+
+  function cell(row, value, className) {
+    const td = document.createElement('td');
+    if (className) td.className = className;
+    td.textContent = value;
+    row.append(td);
+    return td;
+  }
+
+  function renderHistory() {
+    const body = $('historyBody');
+    body.replaceChildren();
+    const all = historyEntries();
+
+    if (!all.length) {
+      const row = document.createElement('tr');
+      const td = cell(row, 'Дасгал дуусгамагц үр дүн огноотойгоо энд хадгалагдана.', 'empty');
+      td.colSpan = 7;
+      body.append(row);
+      $('historySummary').textContent = 'Хадгалсан үр дүн алга.';
+      $('showAllHistory').hidden = true;
+      $('exportCsv').disabled = true;
+      $('clearHistory').disabled = true;
+      return;
+    }
+
+    const shown = historyExpanded ? all : all.slice(0, 25);
+    let lastDay = null;
+    shown.forEach(entry => {
+      const row = document.createElement('tr');
+      const day = dayKey(entry.date);
+
+      const dateCell = document.createElement('td');
+      dateCell.title = longDate(entry.date);
+      if (day !== lastDay) {
+        const mark = document.createElement('span');
+        mark.className = 'day-mark';
+        mark.textContent = shortDate(entry.date);
+        dateCell.append(mark);
+        lastDay = day;
+      }
+      dateCell.append(document.createTextNode(timeOf(entry.date)));
+      row.append(dateCell);
+
+      cell(row, entry.lessonName, 'name');
+      cell(row, MODE_LABELS[entry.mode] || entry.mode || '—');
+      cell(row, entry.cpm, 'num');
+      cell(row, entry.accuracy + '%', 'num');
+      cell(row, formatClock(entry.seconds), 'num');
+      cell(row, entry.stars ? '★'.repeat(entry.stars) : '—', 'num stars');
+      body.append(row);
+    });
+
+    const today = dayKey(new Date());
+    const todayCount = all.filter(entry => dayKey(entry.date) === today).length;
+    const weekStart = Date.now() - 7 * 24 * 3600 * 1000;
+    const week = all.filter(entry => entry.date.getTime() >= weekStart);
+    const weekAverage = week.length
+      ? Math.round(week.reduce((sum, entry) => sum + entry.cpm, 0) / week.length)
+      : 0;
+    const minutes = Math.round(all.reduce((sum, entry) => sum + entry.seconds, 0) / 60);
+
+    $('historySummary').textContent = 'Нийт ' + all.length + ' үр дүн · Өнөөдөр ' + todayCount +
+      ' · Сүүлийн 7 хоногийн дундаж ' + weekAverage + ' тэмдэгт/мин · Нийт ' + minutes + ' минут дасгал';
+    $('showAllHistory').hidden = historyExpanded || all.length <= 25;
+    $('showAllHistory').textContent = 'Бүгдийг харах (' + all.length + ')';
+    $('exportCsv').disabled = false;
+    $('clearHistory').disabled = false;
+  }
+
+  /* ======================= Татах, нөөцлөх ======================= */
+
+  function downloadFile(name, content, type) {
+    try {
+      const blob = new Blob([content], { type: type + ';charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = name;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } catch (err) {
+      window.alert('Файл татаж чадсангүй.');
+    }
+  }
+
+  function exportCsv() {
+    const rows = [['Огноо', 'Цаг', 'Горим', 'Дасгал', 'Тэмдэгт/мин', 'Үг/мин',
+      'Нарийвчлал', 'Түүхий нарийвчлал', 'Тэмдэгт', 'Алдаа', 'Секунд', 'Од']];
+    historyEntries().reverse().forEach(entry => {
+      rows.push([
+        dayKey(entry.date), timeOf(entry.date),
+        MODE_LABELS[entry.mode] || entry.mode,
+        entry.lessonName, entry.cpm, entry.wpm, entry.accuracy, entry.rawAccuracy,
+        entry.chars, entry.errors, entry.seconds, entry.stars
+      ]);
+    });
+    const csv = rows.map(row => row.map(value => {
+      const text = String(value);
+      return /[;"\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+    }).join(';')).join('\r\n');
+    /* BOM ба sep=; — Excel кирилл үсгийг зөв нээхийн тулд */
+    downloadFile('khuuruu-ur-dun-' + dayKey(new Date()) + '.csv', '﻿sep=;\r\n' + csv, 'text/csv');
+  }
+
+  function backup() {
+    downloadFile('khuuruu-noots-' + dayKey(new Date()) + '.json', JSON.stringify(saved, null, 2), 'application/json');
+  }
+
+  function restoreFrom(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      let data;
+      try { data = JSON.parse(String(reader.result)); }
+      catch (err) { window.alert('Энэ файлыг уншиж чадсангүй.'); return; }
+      const sessions = data && Array.isArray(data.history) ? data.history.length : 0;
+      if (!window.confirm('Одоогийн ахиц нөөц өгөгдлөөр солигдоно (' + sessions + ' үр дүн). Үргэлжлүүлэх үү?')) return;
+      if (!applyData(data, false)) { window.alert('Файлын агуулга тохирохгүй байна.'); return; }
+      applyPreferences();
+      persist();
+      setMode(mode);
+    };
+    reader.onerror = () => window.alert('Файлыг уншиж чадсангүй.');
+    reader.readAsText(file);
+  }
+
   /* ======================= Үйл явдлууд ======================= */
+
+  $('exportCsv').addEventListener('click', exportCsv);
+  $('backup').addEventListener('click', backup);
+  $('restore').addEventListener('click', () => $('restoreFile').click());
+  $('restoreFile').addEventListener('change', e => {
+    const file = e.target.files && e.target.files[0];
+    if (file) restoreFrom(file);
+    e.target.value = '';
+  });
+  $('showAllHistory').addEventListener('click', () => { historyExpanded = true; renderHistory(); });
+  $('clearHistory').addEventListener('click', () => {
+    if (!window.confirm('Дасгалын түүхийг бүрмөсөн устгах уу? Од болон дээд амжилт хэвээр үлдэнэ.')) return;
+    saved.history = [];
+    historyExpanded = false;
+    persist();
+  });
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-mode]'), button => {
     button.addEventListener('click', () => setMode(button.dataset.mode));
@@ -721,5 +938,6 @@
   loadSaved();
   applyPreferences();
   renderProgress();
+  renderHistory();
   setMode('course');
 })();

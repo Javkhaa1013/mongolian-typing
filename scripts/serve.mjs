@@ -14,7 +14,9 @@ const types = {
 };
 
 http.createServer((req, res) => {
-  const clean = decodeURIComponent((req.url || '/').split('?')[0]);
+  let clean;
+  try { clean = decodeURIComponent((req.url || '/').split('?')[0]); }
+  catch { clean = '/'; }
   const name = clean === '/' ? 'index.html' : clean.replace(/^\/+/, '');
   const file = path.join(root, name);
   if (!file.startsWith(root) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
